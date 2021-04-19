@@ -60,18 +60,17 @@ static struct libusb_session session;
 int main(int argc, char **argv)
 {
 	int r,i,z;
-	char yesno[] = "";
 	int timeout_time;
+	int port, err = 0;;
+	int PRODUCT_ID = 0, VENDOR_ID = 0x0424;
+	int ret, count;
 	char port_select[] = "";
 	char test_select[] = "";
-	ssize_t cnt;
-	int port;
-	int err = 0;
-	int VENDOR_ID = 0x0424;
-	int PRODUCT_ID = 0;
+	char yesno[] = "";
 	char PRODUCT_ID1[10];
-	int ret;
 	char hexset1[] = "0123456789ABCDEFabcdef";
+	char hexset[] = "0123456789ABCDEFabcdef";
+	ssize_t cnt;
 
 INPUT:
 	printf("Please enter the product ID of the hub under test\n0x");
@@ -81,19 +80,16 @@ INPUT:
 		goto INPUT;
 	}
 
-	int count;
-	char hexset[] = "0123456789ABCDEFabcdef";
 	count = strspn(PRODUCT_ID1, hexset);
 	if (count != 4){
 		printf("Please enter 4 digit hex only\n");
 		goto INPUT;
 	}
+
 	PRODUCT_ID = (int)strtol(PRODUCT_ID1, NULL, 16);
-
-
 	printf("This demo will iniate a test mode on a port.\n");
 
-	TEST_SEL:
+TEST_SEL:
 		printf("Press '1' for Test_J\n");
 		printf("Press '2' for Test_K\n");
 		printf("Press '3' for Test_SE0_NAK\n");
@@ -111,208 +107,149 @@ INPUT:
 PORT_SEL1:
 			printf("Which port will Test_J be sent to?\n");
 			ret = scanf("%s", port_select);
-			if (strcmp(port_select, "1") == 0)
-			{
+			if (strcmp(port_select, "1") == 0) {
 				printf("Port 1 selected\n");
 				session.port_num = 1;
 				session.wIndex = 0x0101;
-			}
-			else if(strcmp(port_select, "2") == 0)
-			{
+			} else if(strcmp(port_select, "2") == 0) {
 				printf("Port 2 selected\n");
 				session.port_num = 2;
 				session.wIndex = 0x0102;
-			}
-			else if(strcmp(port_select, "3") == 0)
-			{
+			} else if(strcmp(port_select, "3") == 0) {
 				printf("Port 3 selected\n");
 				session.port_num = 3;
 				session.wIndex = 0x0103;
-			}
-			else if(strcmp(port_select, "4") == 0)
-			{
+			} else if(strcmp(port_select, "4") == 0) {
 				printf("Port 4 selected\n");
 				session.port_num = 4;
 				session.wIndex = 0x0104;
-			}
-			else if(strcmp(port_select, "5") == 0)
-			{
+			} else if(strcmp(port_select, "5") == 0) {
 				printf("Port 5 selected\n");
 				session.port_num = 5;
 				session.wIndex = 0x0105;
-			}
-			else
-			{
+			} else {
 				printf("Invalid Port Selected. Please select a valid port # or Ctrl+C to quit\n");
 				goto PORT_SEL1;
 			}
-		}
-		else if (strcmp(test_select, "2")==0){
-		PORT_SEL2:
+		} else if (strcmp(test_select, "2") == 0) {
+
+PORT_SEL2:
 			printf("Which port will Test_K be sent to?\n");
+
 			ret = scanf("%s", port_select);
-			if (strcmp(port_select, "1") == 0)
-			{
+			if (strcmp(port_select, "1") == 0) {
 				printf("Port 1 selected\n");
 				session.port_num = 1;
 				session.wIndex = 0x0201;
-			}
-			else if(strcmp(port_select, "2") == 0)
-			{
+			} else if(strcmp(port_select, "2") == 0) {
 				printf("Port 2 selected\n");
 				session.port_num = 2;
 				session.wIndex = 0x0202;
-			}
-			else if(strcmp(port_select, "3") == 0)
-			{
+			} else if(strcmp(port_select, "3") == 0) {
 				printf("Port 3 selected\n");
 				session.port_num = 3;
 				session.wIndex = 0x0203;
-			}
-			else if(strcmp(port_select, "4") == 0)
-			{
+			} else if(strcmp(port_select, "4") == 0) {
 				printf("Port 4 selected\n");
 				session.port_num = 4;
 				session.wIndex = 0x0204;
-			}
-			else
-			{
+			} else {
 				printf("Invalid Port Selected. Please select a valid port # or Ctrl+C to quit\n");
 				goto PORT_SEL2;
 			}
-		}
-		else if (strcmp(test_select, "3")==0){
-		PORT_SEL3:
+		} else if (strcmp(test_select, "3")==0){
+PORT_SEL3:
 			printf("Which port will Test_SE0_NAK be sent to?\n");
 			ret = scanf("%s", port_select);
-			if (strcmp(port_select, "1") == 0)
-			{
+			if (strcmp(port_select, "1") == 0) {
 				printf("Port 1 selected\n");
 				session.port_num = 1;
 				session.wIndex = 0x0301;
-			}
-			else if(strcmp(port_select, "2") == 0)
-			{
+			} else if(strcmp(port_select, "2") == 0) {
 				printf("Port 2 selected\n");
 				session.port_num = 2;
 				session.wIndex = 0x0302;
-			}
-			else if(strcmp(port_select, "3") == 0)
-			{
+			} else if(strcmp(port_select, "3") == 0) {
 				printf("Port 3 selected\n");
 				session.port_num = 3;
 				session.wIndex = 0x0303;
-			}
-			else if(strcmp(port_select, "4") == 0)
-			{
+			} else if(strcmp(port_select, "4") == 0) {
 				printf("Port 4 selected\n");
 				session.port_num = 4;
 				session.wIndex = 0x0304;
-			}
-			else
-			{
+			} else {
 				printf("Invalid Port Selected. Please select a valid port # or Ctrl+C to quit\n");
 				goto PORT_SEL3;
 			}
-		}
-		else if (strcmp(test_select, "4")==0){
-		PORT_SEL4:
+		} else if (strcmp(test_select, "4")==0) {
+PORT_SEL4:
 			printf("Enter Test Package\n");
 			printf("Which port will Test_Packet be sent to?\n");
 			ret = scanf("%s", port_select);
-			if (strcmp(port_select, "0") == 0)
-			{
+			if (strcmp(port_select, "0") == 0) {
 				printf("Port 1 selected\n");
 				session.port_num = 1;
 				session.wIndex = 0x0400;
-			}
-			else if (strcmp(port_select, "1") == 0)
-			{
+			} else if (strcmp(port_select, "1") == 0) {
 				printf("Port 1 selected\n");
 				session.port_num = 1;
 				session.wIndex = 0x0401;
-			}
-			else if(strcmp(port_select, "2") == 0)
-			{
+			} else if(strcmp(port_select, "2") == 0) {
 				printf("Port 2 selected\n");
 				session.port_num = 2;
 				session.wIndex = 0x0402;
-			}
-			else if(strcmp(port_select, "3") == 0)
-			{
+			} else if(strcmp(port_select, "3") == 0) {
 				printf("Port 3 selected\n");
 				session.port_num = 3;
 				session.wIndex = 0x0403;
-			}
-			else if(strcmp(port_select, "4") == 0)
-			{
+			} else if(strcmp(port_select, "4") == 0) {
 				printf("Port 4 selected\n");
 				session.port_num = 4;
 				session.wIndex = 0x0404;
-			}
-			else if(strcmp(port_select, "5") == 0)
-			{
+			} else if(strcmp(port_select, "5") == 0) {
 				printf("Port 5 selected\n");
 				session.port_num = 5;
 				session.wIndex = 0x0405;
-			}
-			else if(strcmp(port_select, "6") == 0)
-			{
+			} else if(strcmp(port_select, "6") == 0) {
 				printf("Port 6 selected\n");
 				session.port_num = 6;
 				session.wIndex = 0x0406;
-			}
-			else if(strcmp(port_select, "7") == 0)
-			{
+			} else if(strcmp(port_select, "7") == 0) {
 				printf("Port 7 selected\n");
 				session.port_num = 7;
 				session.wIndex = 0x0407;
-			}
-			else
-			{
+			} else {
 				printf("Invalid Port Selected. Please select a valid port # or Ctrl+C to quit\n");
 				goto PORT_SEL4;
 			}
-		}
-
-		else if (strcmp(test_select, "5")==0){
+		} else if (strcmp(test_select, "5") == 0) {
 		PORT_SEL5:
 			printf("Which port will Test_Force_Enable be sent to?\n");
 			ret = scanf("%s", port_select);
-			if (strcmp(port_select, "1") == 0)
-			{
+			if (strcmp(port_select, "1") == 0) {
 				printf("Port 1 selected\n");
 				session.port_num = 1;
 				session.wIndex = 0x0501;
-			}
-			else if(strcmp(port_select, "2") == 0)
-			{
+			} else if(strcmp(port_select, "2") == 0) {
 				printf("Port 2 selected\n");
 				session.port_num = 2;
 				session.wIndex = 0x0502;
-			}
-			else if(strcmp(port_select, "3") == 0)
-			{
+			} else if(strcmp(port_select, "3") == 0) {
 				printf("Port 3 selected\n");
 				session.port_num = 3;
 				session.wIndex = 0x0503;
-			}
-			else if(strcmp(port_select, "4") == 0)
-			{
+			} else if(strcmp(port_select, "4") == 0) {
 				printf("Port 4 selected\n");
 				session.port_num = 4;
 				session.wIndex = 0x0504;
-			}
-			else
-			{
+			} else {
 				printf("Invalid Port Selected. Please select a valid port # or Ctrl+C to quit\n");
 				goto PORT_SEL5;
 			}
 		}
-		else if (strcmp(test_select, "q")==0 || strcmp(test_select, "Q")==0){
+		else if (strcmp(test_select, "q")==0 || strcmp(test_select, "Q") == 0) {
 			return 0;
-		}
-		else{
+		} else {
 			printf("Invalid Test Selected or invalid character.\n");
 			goto TEST_SEL;
 		}
@@ -327,64 +264,63 @@ PORT_SEL1:
 	/* set verbosity level to 3, as suggested in the documentation */
 	//libusb_set_debug(session.ctx, 3);
 
-
-		cnt = libusb_get_device_list(session.ctx, &session.dev);
-		if (cnt < 0) {
-			printf("no device found\n");
-			libusb_exit(session.ctx);
-			return -ENODEV;
-		}
-
-		/* open device w/ vendorID and productID */
-		printf("Opening device ID %04x:%04x...", VENDOR_ID, PRODUCT_ID);
-		session.dev_handle = libusb_open_device_with_vid_pid(session.ctx, VENDOR_ID, PRODUCT_ID);
-		if (!session.dev_handle) {
-			printf("failed/not in list\n");
-			libusb_exit(session.ctx);
-			return -ENODEV;
-		}
-		printf("ok\n");
-
-		/* free the list, unref the devices in it */
-		libusb_free_device_list(session.dev, 1);
-
-		/* find out if a kernel driver is attached */
-		if (libusb_kernel_driver_active(session.dev_handle, 0) == 1) {
-			printf("Device has kernel driver attached.\n");
-			/* detach it */
-			if (!libusb_detach_kernel_driver(session.dev_handle, 0))
-				printf("Kernel Driver Detached!\n");
-		}
-
-		int len;
-		int transferred;
-		uint8_t bmRequestType = 0x23;
-		uint8_t bRequest = 0x03;
-		uint16_t wValue = 0x0015;
-		//uint16_t wIndex = 0x0000;
-		unsigned char *data = 0;
-		uint16_t wLength = 0x0000;
-		unsigned int timeout_ = 50000000;
-
-		/* Send Endpoint Reflector control transfer */
-		r = libusb_control_transfer(session.dev_handle,
-							bmRequestType,
-							bRequest,
-							wValue,
-							session.wIndex,
-							data,
-							wLength,
-							timeout_);
-		if (!r){
-			printf("Port now in test mode!\n");
-		}
-		else{
-			printf("Control transfer failed. Error: %d\n", r);
-		}
-
-		/* close the device we opened */
-		libusb_close(session.dev_handle);
+	cnt = libusb_get_device_list(session.ctx, &session.dev);
+	if (cnt < 0) {
+		printf("no device found\n");
 		libusb_exit(session.ctx);
-		return 0;
+		return -ENODEV;
+	}
+
+	/* open device w/ vendorID and productID */
+	printf("Opening device ID %04x:%04x...", VENDOR_ID, PRODUCT_ID);
+	session.dev_handle = libusb_open_device_with_vid_pid(session.ctx, VENDOR_ID, PRODUCT_ID);
+	if (!session.dev_handle) {
+		printf("failed/not in list\n");
+		libusb_exit(session.ctx);
+		return -ENODEV;
+	}
+	printf("ok\n");
+
+	/* free the list, unref the devices in it */
+	libusb_free_device_list(session.dev, 1);
+
+	/* find out if a kernel driver is attached */
+	if (libusb_kernel_driver_active(session.dev_handle, 0) == 1) {
+		printf("Device has kernel driver attached.\n");
+		/* detach it */
+		if (!libusb_detach_kernel_driver(session.dev_handle, 0))
+			printf("Kernel Driver Detached!\n");
+	}
+
+	int len;
+	int transferred;
+	uint8_t bmRequestType = 0x23;
+	uint8_t bRequest = 0x03;
+	uint16_t wValue = 0x0015;
+	//uint16_t wIndex = 0x0000;
+	unsigned char *data = 0;
+	uint16_t wLength = 0x0000;
+	unsigned int timeout_ = 50000000;
+
+	/* Send Endpoint Reflector control transfer */
+	r = libusb_control_transfer(session.dev_handle,
+						bmRequestType,
+						bRequest,
+						wValue,
+						session.wIndex,
+						data,
+						wLength,
+						timeout_);
+	if (!r){
+		printf("Port now in test mode!\n");
+	}
+	else{
+		printf("Control transfer failed. Error: %d\n", r);
+	}
+
+	/* close the device we opened */
+	libusb_close(session.dev_handle);
+	libusb_exit(session.ctx);
+	return 0;
 
 }
